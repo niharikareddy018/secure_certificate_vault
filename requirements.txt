@@ -1,0 +1,11 @@
+Flask==2.3.2
+Flask-CORS==4.0.0
+Flask-JWT-Extended==4.6.0
+Flask-SQLAlchemy==3.1.1
+SQLAlchemy==2.0.34
+psycopg2-binary==2.9.9
+bcrypt==4.1.2
+web3==6.13.0
+py-solc-x==1.1.1
+gunicorn==21.2.0
+Werkzeug==2.3.7

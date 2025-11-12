@@ -1,0 +1,46 @@
+services:
+  - type: web
+    runtime: node
+    name: ganache
+    plan: starter
+    buildCommand: npm install ganache --no-audit --no-fund
+    startCommand: npx ganache --server.port $PORT --server.host 0.0.0.0 --chain.networkId 5777
+    envVars:
+      - key: PORT
+        value: 8545
+
+  - type: web
+    runtime: python
+    name: certificate-api
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    preDeployCommand: python init_db.py
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    disk:
+      name: uploads
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: certdb
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GANACHE_HOST
+        fromService:
+          name: ganache
+          type: web
+          property: host
+      - key: GANACHE_PORT
+        fromService:
+          name: ganache
+          type: web
+          property: port
+      - key: UPLOAD_FOLDER
+        value: /data/uploads
+
+databases:
+  - name: certdb
+    databaseName: certdb
+    user: certdb

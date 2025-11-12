@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script defer src="/app.js"></script>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self'">
+</head>
+<body>
+  <header><h1>Register</h1></header>
+  <main>
+    <form id="registerForm">
+      <label>Email<input type="email" name="email" required></label>
+      <label>Password<input type="password" name="password" required></label>
+      <label>Role
+        <select name="role" required>
+          <option value="issuer">Issuer</option>
+          <option value="student">Student</option>
+        </select>
+      </label>
+      <button type="submit">Register</button>
+    </form>
+    <p id="registerMsg"></p>
+  </main>
+</body>
+</html>

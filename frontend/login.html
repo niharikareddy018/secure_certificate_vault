@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script defer src="/app.js"></script>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self'">
+</head>
+<body>
+  <header><h1>Login</h1></header>
+  <main>
+    <form id="loginForm">
+      <label>Email<input type="email" name="email" required></label>
+      <label>Password<input type="password" name="password" required></label>
+      <button type="submit">Login</button>
+    </form>
+    <p id="loginMsg"></p>
+  </main>
+</body>
+</html>

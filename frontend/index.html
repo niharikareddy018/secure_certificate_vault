@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blockchain Certificate Vault</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script defer src="/app.js"></script>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self'">
+</head>
+<body>
+  <header>
+    <h1>Academic Certificates</h1>
+    <nav>
+      <a href="/login.html">Login</a>
+      <a href="/register.html">Register</a>
+      <a href="/issue.html">Issue</a>
+      <a href="/verify.html">Verify</a>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>Welcome</h2>
+      <p>Issue and verify certificates secured on blockchain.</p>
+    </section>
+    <section>
+      <h2>My Certificates</h2>
+      <button id="loadCerts">Load</button>
+      <pre id="myCerts"></pre>
+    </section>
+  </main>
+  <footer>
+    <small>© Certificate Vault</small>
+  </footer>
+</body>
+</html>

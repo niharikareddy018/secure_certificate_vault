@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Issue Certificate</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script defer src="/app.js"></script>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self'">
+</head>
+<body>
+  <header><h1>Issue Certificate</h1></header>
+  <main>
+    <form id="issueForm" enctype="multipart/form-data">
+      <label>Student Name<input name="student_name" required></label>
+      <label>Student Email<input type="email" name="student_email" required></label>
+      <label>Course Name<input name="course_name" required></label>
+      <label>Issue Date<input type="date" name="issue_date" required></label>
+      <label>PDF File<input type="file" name="file" accept="application/pdf" required></label>
+      <button type="submit">Submit</button>
+    </form>
+    <div id="issueResult"></div>
+  </main>
+</body>
+</html>
