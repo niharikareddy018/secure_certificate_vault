@@ -1,14 +1,4 @@
 {
-  "builds": [
-    {
-      "src": "index.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "index.py"
-    }
-  ]
+  "deprecated": true,
+  "note": "Not used. Backend deployment should target backend/app.py via Render or Railway."
 }

@@ -10,8 +10,8 @@
 </head>
 <body>
   <header>
-    <h1>Academic Certificates</h1>
-    <nav>
+    <h1 style="text-align:center;">Academic Vault Process</h1>
+    <nav style="display:flex; gap:1rem; justify-content:center;">
       <a href="/login.html">Login</a>
       <a href="/register.html">Register</a>
       <a href="/issue.html">Issue</a>
@@ -19,14 +19,14 @@
     </nav>
   </header>
   <main>
-    <section>
+    <section class="card">
       <h2>Welcome</h2>
       <p>Issue and verify certificates secured on blockchain.</p>
     </section>
-    <section>
+    <section class="card">
       <h2>My Certificates</h2>
-      <button id="loadCerts">Load</button>
-      <pre id="myCerts"></pre>
+      <button id="loadCerts" class="btn">Load</button>
+      <div id="myCerts"></div>
     </section>
   </main>
   <footer>

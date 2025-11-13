@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+*.egg
+
+# Environments
+.venv/
+venv/
+.env
+.env.*
+.venv*/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Flask/SQLAlchemy
+instance/
+local.db
+
+# Build / data
+/data/
+/tmp/
+uploads/
+
+# Node
+node_modules/

@@ -1,6 +1,6 @@
-from app import app
-from models import db
+"""
+Deprecated: use backend.init_db
+This script forwards to backend.init_db to initialize the database.
+"""
 
-with app.app_context():
-    db.create_all()
-    print("ok")
+from backend.init_db import *  # noqa: F401,F403

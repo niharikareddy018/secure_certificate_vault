@@ -59,7 +59,24 @@ if (btn) {
   btn.addEventListener('click', async () => {
     const token = localStorage.getItem('token');
     const res = await api.get('/api/certificates', token);
-    const pre = document.getElementById('myCerts');
-    pre.textContent = JSON.stringify(res, null, 2);
+    const el = document.getElementById('myCerts');
+    el.innerHTML = '';
+    (res || []).forEach((r) => {
+      const item = document.createElement('div');
+      item.className = 'card';
+      const meta = document.createElement('div');
+      meta.textContent = `${r.student_name} • ${r.course_name} • ${r.issue_date}`;
+      const actions = document.createElement('div');
+      const reveal = document.createElement('button');
+      reveal.textContent = 'Show Hash';
+      reveal.addEventListener('click', () => {
+        reveal.textContent = r.file_hash;
+        reveal.disabled = true;
+      });
+      actions.appendChild(reveal);
+      item.appendChild(meta);
+      item.appendChild(actions);
+      el.appendChild(item);
+    });
   });
 }
