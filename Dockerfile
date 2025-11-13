@@ -29,5 +29,5 @@ COPY . /app
 ENV PORT=8000
 
 # Start gunicorn binding to the injected PORT
-# Use shell form so $PORT is expanded
-CMD sh -c 'gunicorn backend.app:app --bind 0.0.0.0:${PORT}'
+# Use shell form with double quotes so $PORT expands; default to 8000 if unset
+CMD sh -c "gunicorn backend.app:app --bind 0.0.0.0:${PORT:-8000}"
