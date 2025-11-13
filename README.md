@@ -161,6 +161,11 @@ curl -s https://<your-railway-domain>/health
 
 This bypasses Nixpacks virtualenv quirks and uses the official `python:3.11-slim` runtime.
 
+Notes specific to Railway UI:
+- Build → Set Build Type to Dockerfile (not Nixpacks) so the encodings error is avoided.
+- Settings → Start Command: clear any override so Dockerfile CMD is used.
+- Networking → Port must be a number (e.g., 8000). Do not set it to `$PORT` (that will cause "'$PORT' is not a valid port number").
+
 ## Structure
 - `app.py` – Flask app (entrypoint for Vercel)
 - `config.py` – configuration and env defaults
