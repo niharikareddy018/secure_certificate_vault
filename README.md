@@ -134,6 +134,33 @@ If you want on-chain verification in production:
 - Python 3.13 issues (encodings/pkg_resources): Pin a stable version by adding `runtime.txt` with `python-3.11.7` at repo root (already added).
 - After dependency changes on Render: Dashboard → Service → Clear build cache → Redeploy so new packages install.
 
+### Railway: encodings/venv errors (Dockerfile fix)
+If you see errors like:
+
+```
+ModuleNotFoundError: No module named 'encodings'
+program name = '/app/.venv/bin/python'
+```
+
+switch Railway to Dockerfile mode (this repo includes a `Dockerfile`):
+
+1) In Railway → your service → Settings → Build → ensure it detects the Dockerfile (or set Build Type to Dockerfile).
+2) No Start Command needed; the Dockerfile runs: `gunicorn backend.app:app --bind 0.0.0.0:$PORT`.
+3) Keep your volume mount (`/data`) and env vars (`DATABASE_URL`, `JWT_SECRET`, `UPLOAD_FOLDER=/data/uploads`).
+4) One-time DB init: open a shell in the running service and run:
+
+```bash
+python -m backend.init_db
+```
+
+5) Verify health:
+
+```bash
+curl -s https://<your-railway-domain>/health
+```
+
+This bypasses Nixpacks virtualenv quirks and uses the official `python:3.11-slim` runtime.
+
 ## Structure
 - `app.py` – Flask app (entrypoint for Vercel)
 - `config.py` – configuration and env defaults
@@ -159,7 +186,9 @@ If you want on-chain verification in production:
     - Add Postgres plugin; DATABASE_URL will be set automatically.
     - Set `JWT_SECRET` and `UPLOAD_FOLDER=/data/uploads`.
 3) Volumes: Add a volume and mount to `/data`.
-4) Deploy: Railway will pick `Procfile` and run `gunicorn backend.app:app`.
+4) Deploy:
+   - Recommended: let Railway detect the Dockerfile in this repo (fixes encodings/venv issues).
+   - Alternative (legacy): allow Nixpacks to use the `Procfile` to run `gunicorn backend.app:app`.
 5) Initialize DB once:
 
 ```bash
