@@ -37,4 +37,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
 
 # Start gunicorn binding to the injected PORT
 # Use shell form with double quotes so $PORT expands; default to 8000 if unset
-CMD sh -c "gunicorn backend.app:app --bind 0.0.0.0:${PORT:-8000}"
+CMD sh -c "gunicorn backend.app:app --workers 2 --threads 2 --timeout 120 --access-logfile - --error-logfile - --bind 0.0.0.0:${PORT:-8000}"
