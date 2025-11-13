@@ -130,6 +130,9 @@ If you want on-chain verification in production:
 - 500 errors on DB access: Verify `DATABASE_URL` and that your Supabase IP allowlist permits Vercel (use “Direct connection” with SSL required).
 - Uploads not found after some time: Move file storage to Supabase Storage or S3 as noted above.
  - CORS: The backend enables CORS. Using Vercel rewrites keeps API same-origin to the browser, avoiding CSP and credential issues.
+- `ModuleNotFoundError: No module named 'pkg_resources'` on Render: Add `setuptools` and `wheel` to `backend/requirements.txt` (already added) and redeploy.
+- Python 3.13 issues (encodings/pkg_resources): Pin a stable version by adding `runtime.txt` with `python-3.11.7` at repo root (already added).
+- After dependency changes on Render: Dashboard → Service → Clear build cache → Redeploy so new packages install.
 
 ## Structure
 - `app.py` – Flask app (entrypoint for Vercel)

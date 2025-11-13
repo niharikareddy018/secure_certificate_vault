@@ -37,8 +37,14 @@ def create_app():
     db.init_app(app)
     jwt = JWTManager(app)
 
+    # Web3 setup - make it non-blocking if provider unavailable
     provider = Config.build_web3_provider()
-    w3 = Web3(Web3.HTTPProvider(provider))
+    w3 = None
+    try:
+        w3 = Web3(Web3.HTTPProvider(provider))
+    except Exception as e:
+        app.logger.warning(f"Web3 provider unavailable: {e}")
+    
     contract_address = app.config.get("CONTRACT_ADDRESS")
     contract = None
 
@@ -48,10 +54,10 @@ def create_app():
         source = f.read()
 
     def ensure_contract():
-        nonlocal contract_address, contract
+        nonlocal contract_address, contract, w3
         if contract is not None:
             return contract
-        if not w3.is_connected():
+        if w3 is None or not w3.is_connected():
             return None
         if contract_address:
             compiled = compile_source(source, output_values=["abi"])
@@ -266,13 +272,18 @@ def create_app():
             return jsonify({"error": "forbidden"}), 403
         return send_from_directory(app.config["UPLOAD_FOLDER"], filename, as_attachment=True)
 
+    @app.route("/health")
+    def health():
+        """Health check endpoint for Railway/Render"""
+        return jsonify({"status": "ok", "service": "certificate-api"}), 200
+
     @app.route("/")
     def index():
         # If frontend isn't deployed with the API, this may 404 on static file; return health
         index_path = os.path.join(static_dir, "index.html")
         if os.path.exists(index_path):
             return app.send_static_file("index.html")
-        return jsonify({"status": "ok"})
+        return jsonify({"status": "ok", "service": "certificate-api"}), 200
 
     return app
 

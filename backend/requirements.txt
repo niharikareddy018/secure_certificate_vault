@@ -9,3 +9,6 @@ web3==6.13.0
 py-solc-x==1.1.1
 gunicorn==21.2.0
 Werkzeug==2.3.7
+# Added for Render: pkg_resources comes from setuptools; wheel helps build deps
+setuptools>=68.0.0
+wheel>=0.41.0
