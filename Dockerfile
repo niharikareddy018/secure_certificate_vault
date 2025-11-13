@@ -28,6 +28,9 @@ COPY . /app
 # Default port (Railway will inject PORT)
 ENV PORT=8000
 
+# Document container port
+EXPOSE 8000
+
 # Container healthcheck: rely on /health
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
     CMD sh -c "curl -fsS http://localhost:${PORT:-8000}/health || exit 1"
