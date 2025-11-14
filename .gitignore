@@ -30,3 +30,4 @@ uploads/
 
 # Node
 node_modules/
+.vercel

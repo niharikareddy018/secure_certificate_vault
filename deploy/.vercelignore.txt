@@ -1,0 +1,7 @@
+
+* 
+!app.py
+!models.py
+!init_db.py
+!requirements.txt
+!vercel.json
