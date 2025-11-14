@@ -44,7 +44,35 @@ on('issueForm', async (fd) => {
   const token = localStorage.getItem('token');
   const res = await api.form('/api/certificates', fd, token);
   const div = document.getElementById('issueResult');
-  div.textContent = JSON.stringify(res, null, 2);
+  div.innerHTML = '';
+  const pre = document.createElement('pre');
+  pre.textContent = JSON.stringify(res, null, 2);
+  div.appendChild(pre);
+  if (res && res.download_url) {
+    const link = document.createElement('a');
+    link.textContent = 'Download uploaded PDF';
+    link.href = res.download_url;
+    link.className = 'btn';
+    link.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const tok = localStorage.getItem('token');
+      const resp = await fetch(res.download_url, { headers: tok ? { 'Authorization': `Bearer ${tok}` } : {} });
+      if (!resp.ok) {
+        alert('Download failed');
+        return;
+      }
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = res.filename || 'certificate.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+    div.appendChild(link);
+  }
 });
 
 on('verifyForm', async (fd) => {
@@ -73,7 +101,29 @@ if (btn) {
         reveal.textContent = r.file_hash;
         reveal.disabled = true;
       });
+      const download = document.createElement('button');
+      download.textContent = 'Download PDF';
+      download.disabled = !r.download_url;
+      download.addEventListener('click', async () => {
+        if (!r.download_url) return;
+        const tok = localStorage.getItem('token');
+        const resp = await fetch(r.download_url, { headers: tok ? { 'Authorization': `Bearer ${tok}` } : {} });
+        if (!resp.ok) {
+          alert('Download failed');
+          return;
+        }
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = r.filename || 'certificate.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
       actions.appendChild(reveal);
+      actions.appendChild(download);
       item.appendChild(meta);
       item.appendChild(actions);
       el.appendChild(item);

@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
-from web3 import Web3
+Web3 = None
 from solcx import install_solc, compile_source
 import bcrypt
 
@@ -35,13 +35,25 @@ def create_app():
     CORS(app, supports_credentials=True)
 
     db.init_app(app)
+    with app.app_context():
+        try:
+            db.create_all()
+        except Exception:
+            pass
     jwt = JWTManager(app)
+
+    try:
+        from web3 import Web3 as _Web3
+        globals()["Web3"] = _Web3
+    except Exception as e:
+        app.logger.warning(f"Web3 import unavailable: {e}")
 
     # Web3 setup - make it non-blocking if provider unavailable
     provider = Config.build_web3_provider()
     w3 = None
     try:
-        w3 = Web3(Web3.HTTPProvider(provider))
+        if Web3 is not None:
+            w3 = Web3(Web3.HTTPProvider(provider))
     except Exception as e:
         app.logger.warning(f"Web3 provider unavailable: {e}")
     
@@ -132,10 +144,13 @@ def create_app():
     def issue():
         uid = get_jwt_identity()
         claims = get_jwt()
-        if claims.get("role") != "issuer":
+        role = claims.get("role")
+        if role not in {"issuer", "student"}:
             return jsonify({"error": "forbidden"}), 403
         student_name = (request.form.get("student_name") or "").strip()
         student_email = (request.form.get("student_email") or "").strip().lower()
+        if role == "student":
+            student_email = (claims.get("email") or "").strip().lower()
         course_name = (request.form.get("course_name") or "").strip()
         issue_date_str = (request.form.get("issue_date") or "").strip()
         f = request.files.get("file")
@@ -190,7 +205,14 @@ def create_app():
             cid = cert.id
         except Exception:
             db.session.rollback()
-        return jsonify({"id": cid, "hash": cert.file_hash, "tx": tx_hash_hex, "contract": addr})
+        return jsonify({
+            "id": cid,
+            "hash": cert.file_hash,
+            "tx": tx_hash_hex,
+            "contract": addr,
+            "filename": filename,
+            "download_url": f"/uploads/{filename}",
+        })
 
     @app.route("/api/certificates", methods=["GET"])
     @jwt_required()
@@ -201,8 +223,10 @@ def create_app():
             rows = Certificate.query.filter_by(issuer_id=int(uid)).order_by(Certificate.created_at.desc()).all()
         else:
             rows = Certificate.query.filter_by(student_email=claims.get("email")).order_by(Certificate.created_at.desc()).all()
-        return jsonify([
-            {
+        result = []
+        for r in rows:
+            filename = os.path.basename(r.file_path) if r.file_path else None
+            result.append({
                 "id": r.id,
                 "student_name": r.student_name,
                 "student_email": r.student_email,
@@ -211,9 +235,10 @@ def create_app():
                 "file_hash": r.file_hash,
                 "blockchain_tx": r.blockchain_tx,
                 "contract_address": r.contract_address,
-            }
-            for r in rows
-        ])
+                "filename": filename,
+                "download_url": f"/uploads/{filename}" if filename else None,
+            })
+        return jsonify(result)
 
     @app.route("/api/verify", methods=["GET"])
     def verify():

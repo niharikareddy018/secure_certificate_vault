@@ -1,8 +1,8 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/:match*",
-      "destination": "https://web-production-41dbb.up.railway.app/api/:match*"
-    }
-  ]
+﻿{
+    "rewrites":  [
+                     {
+                         "destination":  "https://YOUR-RW-DOMAIN/api/:match*",
+                         "source":  "/api/:match*"
+                     }
+                 ]
 }

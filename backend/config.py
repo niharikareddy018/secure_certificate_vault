@@ -2,10 +2,13 @@ import os
 
 
 class Config:
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///local.db")
+    _root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    _default_db = os.path.join(_root, "local.db")
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL") or f"sqlite:///{_default_db}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.getenv("JWT_SECRET", "dev-secret")
-    UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER") or ("/tmp/uploads" if os.getenv("VERCEL") else "/data/uploads")
+    _default_uploads = os.path.join(_root, "uploads")
+    UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER") or (os.path.join("/tmp", "uploads") if os.getenv("VERCEL") else _default_uploads)
     MAX_CONTENT_LENGTH = int(os.getenv("MAX_CONTENT_LENGTH", str(20 * 1024 * 1024)))
     GANACHE_HOST = os.getenv("GANACHE_HOST")
     GANACHE_PORT = os.getenv("GANACHE_PORT")
